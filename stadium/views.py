@@ -9,7 +9,11 @@ from .serializers import (
                         ForeignKeyServicesSerializer, ServiceCategoryModelSerializer,
                         ServiceCategorySerializerForSasha, ServiceSerializerForSasha,
                         PeopleSerializer, ManyToManySerializer)
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
+from django.contrib.auth.models import User
 
 # Create your views here.
 
@@ -152,6 +156,10 @@ def create_service_category_from_list(request):
 # ВЬЮШКИ ДЛЯ ПОЛУЧЕНИЯ И СОХРАНЕНИЯ JSON-ОВ МОДЕЛЕЙ СО СВЯЗЬЮ ManyToMany
 
 class PeopleView(APIView):
+    
+    # authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+    
     def get(self, request):
 
         people = PeopleCategory.objects.all()
@@ -187,3 +195,16 @@ def create_people_category_from_list(request):
         return Response({'message':'success'})
     
     return Response(serializer.errors)
+
+class RegisterView(APIView):
+    def post(self, request):
+        
+        user = User.objects.create_user(username=request.data['username'], password=request.data['password'])
+        token = Token.objects.create(user=user)
+    
+        return Response({'message': 'success'})
+
+
+# class LoginView(APIView):
+#     def post(self, request):
+        

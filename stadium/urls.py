@@ -1,13 +1,14 @@
 from django.contrib import admin
 from django.urls import path
 from django.urls import path
-from .views import (ServiceView, create_service_from_list ,
+from .views import (RegisterView, ServiceView, create_service_from_list ,
                     get_full_data, create_service_category_from_list,
                     SubserviceView, ServiceCategoryView,
                     PeopleView, PeopleCategoryView,
                     create_people_category_from_list)
 
 urlpatterns = [
+    path('register/', RegisterView.as_view()),
     path('service/', ServiceView.as_view()),
     path('service/bulk/', create_service_from_list),
     path('subservice/', SubserviceView.as_view()),
