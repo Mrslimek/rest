@@ -5,12 +5,10 @@ from rest_framework.response import Response
 from .models import PeopleCategory, ServiceCategory, Service, Subservice
 from .serializers import (
                         ServiceCategorySerializer, ServiceSerializer,
-                        ServiceSerializerExcludeForeignKey, SubserviceSerializer,
-                        SubserviceSerializerExcludeForeignKey, ForeignKeyServicesSerializer,
-                        ServiceCategoryModelSerializer, ServiceCategorySerializerForSasha,
-                        ServiceSerializerForSasha, PeopleSerializer,
-                        ManyToManySerializer
-                        )
+                        ServiceSerializerExcludeForeignKey, SubserviceSerializerExcludeForeignKey,
+                        ForeignKeyServicesSerializer, ServiceCategoryModelSerializer,
+                        ServiceCategorySerializerForSasha, ServiceSerializerForSasha,
+                        PeopleSerializer, ManyToManySerializer)
 from rest_framework.views import APIView
 
 # Create your views here.
@@ -32,15 +30,27 @@ class ServiceView(APIView):
             return Response({'message': 'success'})
         
         return Response(serializer.errors)
-
-
-@api_view(['GET'])
-def get_subservice(request):
     
-    subservices = Subservice.objects.all()
-    print(subservices)
-    serializer = SubserviceSerializerExcludeForeignKey(subservices, many=True)
-    return Response(serializer.data)
+@api_view(['GET', 'POST'])
+def create_service_from_list(request):
+
+    serializer = ServiceSerializer(data=request.data, many=True)
+    
+    if serializer.is_valid():    
+        serializer.save()
+        return Response({'message':'success'})
+    
+    return Response(serializer.errors)
+
+
+class SubserviceView(APIView):
+    
+    def get(self, request):
+        subservices = Subservice.objects.all()
+        
+        serializer = SubserviceSerializerExcludeForeignKey(subservices, many=True)
+        
+        return Response(serializer.data)
 
 @api_view(['GET'])
 def get_full_data(request):
@@ -66,12 +76,10 @@ class ServiceCategoryView(APIView):
                 serializer.save()
                 return Response({'message':'success'})
             
-            return Response({'serializer.errors': 'Пошел ты'})
+            return Response(serializer.errors)
 
-    
-class CreateServiceCategoryFromList(APIView):
-
-    def post(self, request):
+@api_view(['POST'])
+def create_service_category_from_list(request):
         
         serializer = ServiceCategorySerializerForSasha(data=request.data, many=True)
         
@@ -161,7 +169,7 @@ class PeopleCategoryView(APIView):
 
     def post(self, request):
     
-        serializer = ManyToManySerializer(data=request.data, many=True)
+        serializer = ManyToManySerializer(data=request.data)
         
         if serializer.is_valid():        
             serializer.save()
@@ -169,13 +177,13 @@ class PeopleCategoryView(APIView):
         
         return Response(serializer.errors)
 
+@api_view(['POST'])
 def create_people_category_from_list(request):
     
     serializer = ManyToManySerializer(data=request.data, many=True)
     
     if serializer.is_valid():
-        
         serializer.save()
-        
         return Response({'message':'success'})
+    
     return Response(serializer.errors)

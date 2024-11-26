@@ -24,28 +24,16 @@ class ServiceSerializerExcludeForeignKey(serializers.Serializer):
     description = serializers.CharField()
     best = serializers.BooleanField()
     
-class SubserviceSerializer(serializers.Serializer):
+# class SubserviceSerializer(serializers.Serializer):
     
-    """
-    Возвращает словарь с полями модели Subservice
-    """
+#     """
+#     Возвращает словарь с полями модели Subservice
+#     """
     
-    title = serializers.CharField()
-    unit = serializers.CharField()
-    price = serializers.DecimalField(max_digits=20, decimal_places=2)
-    
-class ServiceSerializerIncludeSubserviceSet(serializers.Serializer):
+#     title = serializers.CharField()
+#     unit = serializers.CharField()
+#     price = serializers.DecimalField(max_digits=20, decimal_places=2)
 
-    """
-    Возвращает словарь с полями модели Service,
-    Включая поля модели Subservice
-    """
-    
-    title = serializers.CharField()
-    image = serializers.ImageField()
-    description = serializers.CharField()
-    best = serializers.BooleanField()
-    subservice_set = SubserviceSerializer()
     
 class SubserviceSerializerExcludeForeignKey(serializers.Serializer):
     
@@ -57,6 +45,19 @@ class SubserviceSerializerExcludeForeignKey(serializers.Serializer):
     title = serializers.CharField()
     unit = serializers.CharField()
     price = serializers.DecimalField(max_digits=20, decimal_places=2)
+    
+
+class ServiceSerializerIncludeSubserviceSet(serializers.Serializer):
+
+    """
+    Возвращает словарь с полями модели Service,
+    Включая поля модели Subservice
+    """
+    
+    title = serializers.CharField()
+    description = serializers.CharField()
+    best = serializers.BooleanField()
+    subservice_set = SubserviceSerializerExcludeForeignKey(many=True)
 
 class ServiceSerializer(serializers.Serializer):
     
@@ -95,7 +96,7 @@ class ForeignKeyServicesSerializer(serializers.Serializer):
     """
     
     title = serializers.CharField()
-    service_set = ServiceSerializer(many=True)
+    service_set = ServiceSerializerIncludeSubserviceSet(many=True)
 
         
 class ServiceSerializerForSasha(serializers.Serializer):
@@ -165,3 +166,4 @@ class ManyToManySerializer(serializers.Serializer):
         for service_category_data in category_user_data:
             service_category, created = ServiceCategory.objects.get_or_create(**service_category_data)
             people_category.category_user.add(service_category)
+        return people_category
