@@ -202,9 +202,13 @@ class RegisterView(APIView):
         user = User.objects.create_user(username=request.data['username'], password=request.data['password'])
         token = Token.objects.create(user=user)
     
-        return Response({'message': 'success'})
+        return Response({'message': token.key})
 
 
 # class LoginView(APIView):
 #     def post(self, request):
         
+
+        #c32cb85e796f828a086076a7f4206bf54b111ee9
+
+        #eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.dyt0CoTl4WoVjAHI9Q_CwSKhl6d_9rhM3NrXuJttkao
