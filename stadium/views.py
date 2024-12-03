@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework import generics
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from .models import PeopleCategory, ServiceCategory, Service, Subservice
 from .serializers import (
@@ -34,7 +34,7 @@ class ServiceView(APIView):
             return Response({'message': 'success'})
         
         return Response(serializer.errors)
-    
+
 @api_view(['GET', 'POST'])
 def create_service_from_list(request):
 
@@ -56,7 +56,9 @@ class SubserviceView(APIView):
         
         return Response(serializer.data)
 
+
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_full_data(request):
     
     data = ServiceCategory.objects.all()
@@ -196,6 +198,7 @@ def create_people_category_from_list(request):
     
     return Response(serializer.errors)
 
+
 class RegisterView(APIView):
     def post(self, request):
         
@@ -207,8 +210,3 @@ class RegisterView(APIView):
 
 # class LoginView(APIView):
 #     def post(self, request):
-        
-
-        #c32cb85e796f828a086076a7f4206bf54b111ee9
-
-        #eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.dyt0CoTl4WoVjAHI9Q_CwSKhl6d_9rhM3NrXuJttkao

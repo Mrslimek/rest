@@ -43,9 +43,11 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'drf_yasg',
     'rest_framework',
+    'rest_framework_simplejwt',
     "corsheaders",
     'api',
-    'stadium'
+    'stadium',
+    'lesson_signals',
 ]
 
 MIDDLEWARE = [
@@ -143,9 +145,7 @@ INTERNAL_IPS = [
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
-    ]
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
 }
